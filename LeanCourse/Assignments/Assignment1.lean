@@ -49,7 +49,7 @@ your proof is finished.
 -/
 
 example (a b : ℝ) : (a+b)^2 = a^2 + 2*a*b + b^2 := by {
-  sorry
+  ring
   }
 
 /- In the first example above, take a closer look at where Lean displays parentheses.
@@ -99,7 +99,8 @@ but it doesn't use the assumptions `h` and `h'`
 -/
 
 example (a b c d : ℝ) (h : b = d + d) (h' : a = b + c) : a + b = c + 4 * d := by {
-  sorry
+  rw[h',h]
+  ring
   }
 
 /- ## Rewriting with a lemma
