@@ -168,7 +168,9 @@ def SequentialLimit (u : ℕ → ℝ) (l : ℝ) : Prop :=
 
 example (u : ℕ → ℝ) (l : ℝ) : ¬ SequentialLimit u l ↔
     ∃ ε > 0, ∀ N, ∃ n ≥ N, |u n - l| ≥ ε := by {
-  sorry
+  unfold SequentialLimit
+  push_neg
+  rfl
   }
 
 lemma sequentialLimit_unique (u : ℕ → ℝ) (l l' : ℝ) :
