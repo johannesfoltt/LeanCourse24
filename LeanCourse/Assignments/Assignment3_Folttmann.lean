@@ -12,14 +12,13 @@ def SequentialLimit (u : ℕ → ℝ) (l : ℝ) : Prop :=
 lemma exists_distributes_over_or {α : Type*} {p q : α → Prop} :
     (∃ x, p x ∨ q x) ↔ (∃ x, p x) ∨ (∃ x, q x) := by {
   constructor
-  · intro h
-    obtain ⟨x, hx⟩ := h
+  · rintro ⟨x, hx⟩
     rcases hx with hx₁ | hx₂
     · left
       use x
     · right
       use x
-  · intro h
+  · rintro h
     rcases h with h₁ | h₂
     · obtain ⟨x, hx⟩ := h₁
       use x
@@ -82,7 +81,7 @@ lemma exercise_cantor (α : Type*) (f : α → Set α) : ¬ Surjective f := by {
   unfold Surjective at h
   let R := {x | x ∉ f x}
   obtain ⟨r, hr⟩ := h R
-  by_cases r ∈ R
+  by_cases hR : r ∈ R
   · apply hR
     rw [hr]
     exact hR

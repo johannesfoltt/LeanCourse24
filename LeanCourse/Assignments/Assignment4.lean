@@ -122,14 +122,22 @@ lemma sequentialLimit_squeeze {s₁ s₂ s₃ : ℕ → ℝ} {a : ℝ}
   rw [abs_lt]
   constructor
   · have h₂ := hs₁s₂ n
+    have hnN₁ : n ≥ N₁ := by {
+      exact le_of_max_le_left hn
+    }
     calc -ε < s₁ n - a := by {
-    sorry
+      have hN₁ := hN₁ n hnN₁
+      exact (abs_lt.1 hN₁).1
     }
     _≤ s₂ n - a := by linarith
   · have h₃ := hs₂s₃ n
+    have hnN₃ : n ≥ N₃ := by {
+      exact le_of_max_le_right hn
+    }
     calc s₂ n - a ≤ s₃ n - a := by linarith
     _< ε := by {
-    sorry
+      have hN₃ := hN₃ n hnN₃
+      exact (abs_lt.1 hN₃).2
     }
   }
 
@@ -138,13 +146,36 @@ lemma sequentialLimit_squeeze {s₁ s₂ s₃ : ℕ → ℝ} {a : ℝ}
 /- Prove this without using lemmas from Mathlib. -/
 lemma image_and_intersection {α β : Type*} (f : α → β) (s : Set α) (t : Set β) :
     f '' s ∩ t = f '' (s ∩ f ⁻¹' t) := by {
-  sorry
+  ext x
+  simp
+  constructor
+  · rintro ⟨⟨x₁, hx₁⟩, hx⟩
+    use x₁
+    constructor
+    · constructor
+      · exact hx₁.1
+      · rw [hx₁.2]
+        exact hx
+    · exact hx₁.2
+  · rintro ⟨x₁, ⟨hx₁, hx⟩⟩
+    constructor
+    · use x₁
+      constructor
+      · exact hx₁.1
+      · exact hx
+    · rw [← hx]
+      exact hx₁.2
   }
 
 /- Prove this by finding relevant lemmas in Mathlib. -/
 lemma preimage_square :
     (fun x : ℝ ↦ x ^ 2) ⁻¹' {y | y ≥ 16} = { x : ℝ | x ≤ -4 } ∪ { x : ℝ | x ≥ 4 } := by {
-  sorry
+  ext x
+  simp
+  have h₀ : (16:ℝ) = (4:ℝ) ^ 2 := by norm_num
+  have h₁ : |(4:ℝ)| = 4 := by norm_num
+  rw [h₀, sq_le_sq, h₁, le_abs, ← le_neg]
+  tauto
   }
 
 
@@ -154,7 +185,9 @@ Now prove the following example, mimicking the proof from the lecture.
 If you want, you can define `g` separately first.
 -/
 lemma inverse_on_a_set [Inhabited α] (hf : InjOn f s) : ∃ g : β → α, LeftInvOn g f s := by {
-  sorry
+  unfold InjOn at hf
+  unfold LeftInvOn
+  use inverse f
   }
 
 
