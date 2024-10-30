@@ -82,8 +82,7 @@ lemma exercise_cantor (α : Type*) (f : α → Set α) : ¬ Surjective f := by {
   unfold Surjective at h
   let R := {x | x ∉ f x}
   obtain ⟨r, hr⟩ := h R
-  have h₀ : r ∈ R ∨ r ∉ R := by tauto
-  rcases h₀ with hR | hR
+  by_cases r ∈ R
   · apply hR
     rw [hr]
     exact hR

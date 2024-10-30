@@ -96,7 +96,14 @@ produces a sequence that converges to the same value. -/
 lemma sequentialLimit_reindex {s : ℕ → ℝ} {r : ℕ → ℕ} {a : ℝ}
     (hs : SequentialLimit s a) (hr : ∀ m : ℕ, ∃ N : ℕ, ∀ n ≥ N, r n ≥ m) :
     SequentialLimit (s ∘ r) a := by {
-  sorry
+  intros ε hε
+  obtain ⟨N₀, hN₀⟩ := hs ε hε
+  obtain ⟨N₁, hN₁⟩ := hr N₀
+  use N₁
+  intros n hn
+  simp
+  apply hN₀
+  exact hN₁ n hn
   }
 
 
@@ -107,7 +114,23 @@ lemma sequentialLimit_squeeze {s₁ s₂ s₃ : ℕ → ℝ} {a : ℝ}
     (hs₁ : SequentialLimit s₁ a) (hs₃ : SequentialLimit s₃ a)
     (hs₁s₂ : ∀ n, s₁ n ≤ s₂ n) (hs₂s₃ : ∀ n, s₂ n ≤ s₃ n) :
     SequentialLimit s₂ a := by {
-  sorry
+  intros ε hε
+  obtain ⟨N₁, hN₁⟩ := hs₁ ε hε
+  obtain ⟨N₃, hN₃⟩ := hs₃ ε hε
+  use max N₁ N₃
+  intros n hn
+  rw [abs_lt]
+  constructor
+  · have h₂ := hs₁s₂ n
+    calc -ε < s₁ n - a := by {
+    sorry
+    }
+    _≤ s₂ n - a := by linarith
+  · have h₃ := hs₂s₃ n
+    calc s₂ n - a ≤ s₃ n - a := by linarith
+    _< ε := by {
+    sorry
+    }
   }
 
 /- ## Sets -/
