@@ -186,14 +186,33 @@ Then state and prove the lemma that for any element of a strict bipointed type w
 
 -- give the definition here
 
+@[ext] structure Strict_Bipointed_Type where
+  α : Type*
+  x₀ : α
+  x₁ : α
+  x₀_neq_x₁ : x₀ ≠ x₁
+
 -- state and prove the lemma here
 
+lemma neq_x₀_or_neq_x₁ (T : Strict_Bipointed_Type) : ∀z, z ≠ T.x₀ ∨ z ≠ T.x₁ := by{
+  intro z
+  by_cases h : z = T.x₀
+  · right
+    rw [h]
+    exact T.x₀_neq_x₁
+  · left
+    assumption
+}
 
 /- Prove by induction that `∑_{i = 0}^{n} i^3 = (∑_{i=0}^{n} i) ^ 2`. -/
 open Finset in
 lemma sum_cube_eq_sq_sum (n : ℕ) :
     (∑ i in range (n + 1), (i : ℚ) ^ 3) = (∑ i in range (n + 1), (i : ℚ)) ^ 2 := by {
-  sorry
+  induction n with
+  | zero =>
+    norm_num
+  | succ n ih =>
+
   }
 
 /-
@@ -219,7 +238,13 @@ is less well-behaved.
 
 lemma not_prime_iff (n : ℕ) :
     ¬ Nat.Prime n ↔ n = 0 ∨ n = 1 ∨ ∃ a b : ℕ, 2 ≤ a ∧ 2 ≤ b ∧ n = a * b := by {
-  sorry
+  constructor
+  · intro h
+    by_cases h₀₁ : n = 0 ∨ n = 1
+    · tauto
+    · right
+      right
+      sorry
   }
 
 lemma prime_of_prime_two_pow_sub_one (n : ℕ) (hn : Nat.Prime (2 ^ n - 1)) : Nat.Prime n := by {
@@ -291,5 +316,9 @@ attribute [-simp] card_powerset
 
 lemma fintype_card_powerset (α : Type*) (s : Finset α) :
     Finset.card (powerset s) = 2 ^ Finset.card s := by {
-  sorry
+  induction s using Finset.induction with
+  | empty =>
+    rfl
+  | @insert x s hxs ih =>
+    sorry
   }
