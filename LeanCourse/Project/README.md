@@ -2,7 +2,7 @@
 
 Please fill out the following. Fill in the project topic once you have decided.
 ```
-First & last name:
+First & last name: Johannes Folttmann
 Project topic:
 Partner (optional):
 ```
