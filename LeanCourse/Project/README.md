@@ -3,7 +3,7 @@
 Please fill out the following. Fill in the project topic once you have decided.
 ```
 First & last name: Johannes Folttmann
-Project topic:
+Project topic: Formalizing Lawvere's fixed point theorem
 Partner (optional):
 ```
 
