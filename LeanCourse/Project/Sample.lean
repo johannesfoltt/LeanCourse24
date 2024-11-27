@@ -11,7 +11,7 @@ noncomputable section
 /- Now write definitions and theorems. -/
 
 variable (C : Type*) [Category C] [h : ChosenFiniteProducts C] [CartesianClosed C]
-variable (A B : C)
+variable (A B X Y Z: C)
 variable (φ: A ⟶ B ^^ A)
 variable (g h: B ⟶ B)
 variable (a : ⊤_ C ⟶ A)
@@ -39,10 +39,23 @@ theorem Lawvere_fixed_point :
     let q := CartesianClosed.curry ((Limits.prod.rightUnitor A).hom ≫ (Limits.diag A) ≫ (Limits.prod.map (𝟙 A) Φ) ≫ ((exp.ev A).app B) ≫ f)
     obtain ⟨p, hp⟩ := hΦ q
     use p ≫ (Limits.prod.rightUnitor A).inv ≫ (CartesianClosed.uncurry (p ≫ Φ))
-    rw [hp]
-    unfold q
-    simp
-    sorry
+    rw[eq_comm]
+    calc p ≫ (Limits.prod.rightUnitor A).inv ≫ (CartesianClosed.uncurry (p ≫ Φ))
+      = p ≫ (Limits.diag A) ≫ (Limits.prod.map (𝟙 A) Φ) ≫ ((exp.ev A).app B) ≫ f := by{
+      rw [hp]
+      unfold q
+      simp
+    }
+    _= p ≫ (Limits.prod.rightUnitor A).inv ≫ (Limits.prod.map (𝟙 A) p) ≫ (Limits.prod.map (𝟙 A) Φ) ≫ ((exp.ev A).app B) ≫ f := by{
+      sorry --diag_curry
+    }
+    _= p ≫ (Limits.prod.rightUnitor A).inv ≫ (Limits.prod.map (𝟙 A) (p ≫ Φ)) ≫ ((exp.ev A).app B) ≫ f := by{
+      rw [Limits.prod.map_id_comp_assoc]
+    }
+    _= (p ≫ (Limits.prod.rightUnitor A).inv ≫ CartesianClosed.uncurry (p ≫ Φ)) ≫ f := by{
+      rw [← CategoryTheory.CartesianClosed.homEquiv_symm_apply_eq]
+      sorry
+    }
   }
 
 theorem Cantor_types (α : Type*) : ¬ ∃(f : α → Set α), Function.Surjective f := by {
