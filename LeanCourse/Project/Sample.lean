@@ -28,14 +28,6 @@ abbrev point_surjective (Φ : A ⟶ B) :=
 abbrev has_fixed_point (f : A ⟶ A) :=
   ∃ (s : ⊤_ C ⟶ A), (s ≫ f = s)
 
-/-Construction of (q : (⊤ ⟶ (B ^^ A))):
-q  := curry (q₀ : A × ⊤ ⟶ B)
-q₀ := (Limits.prod.rightUnitor A).hom ≫ (q₁ : A ⟶ B)
-q₁ := (A diag A × A) ≫ (q₂ : A × A ⟶ (B ^^ A) × A)
-q₂ := (prod Φ id : A × A ⟶ (B ^^ A) × A) ≫ (q₃ : (B ^^ A) × A ⟶ B)
-q₃ := (eval : (B ^^ A) × A ⟶ B) ≫ (f : B ⟶ B)
--/
-
 #check CartesianClosed.curry ((Limits.prod.rightUnitor A).hom ≫ (Limits.diag A) ≫ (Limits.prod.map (𝟙 A) φ) ≫ ((exp.ev A).app B) ≫ g)
 #check a ≫ (Limits.prod.rightUnitor A).inv ≫ (CartesianClosed.uncurry (a ≫ φ))
 
