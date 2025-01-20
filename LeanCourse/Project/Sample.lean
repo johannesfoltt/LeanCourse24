@@ -13,23 +13,21 @@ noncomputable section
 
 variable (C : Type*) [Category C] [h : ChosenFiniteProducts C] [CartesianClosed C]
 variable (A B X Y Z: C)
-variable (φ: A ⟶ B ^^ A)
+variable (φ: X ⟶ B ^^ A)
 variable (g h: B ⟶ B)
 variable (a : ⊤_ C ⟶ A)
+variable (x : ⊤_ C ⟶ X)
 
 abbrev point_surjective (Φ : A ⟶ B) :=
   ∀ (q : ⊤_ C ⟶ B), ∃ (p : ⊤_ C ⟶ A), (p ≫ Φ) = q
 
-#check (exp.ev A).app B
+#check (Limits.prod.map a (x ≫ φ))
 
---abbrev weakly_point_surjective (Φ : X ⟶ B ^^ A) :=
---  ∀ (f : A ⟶ B), ∃ (x : ⊤_ C ⟶ X), ∀ (a : ⊤_ C ⟶ A), (Limits.prod.lift (x ≫ Φ) a) ≫ ((exp.ev A).app B)
+abbrev weakly_point_surjective (Φ : X ⟶ B ^^ A) :=
+  ∀ (f : B ^^ A), ∃ (x : ⊤_ C ⟶ X), ∀ (a : ⊤_ C ⟶ A), a ≫ f =
 
 abbrev has_fixed_point (f : A ⟶ A) :=
   ∃ (s : ⊤_ C ⟶ A), (s ≫ f = s)
-
-#check CartesianClosed.curry ((Limits.prod.rightUnitor A).hom ≫ (Limits.diag A) ≫ (Limits.prod.map (𝟙 A) φ) ≫ ((exp.ev A).app B) ≫ g)
-#check a ≫ (Limits.prod.rightUnitor A).inv ≫ (CartesianClosed.uncurry (a ≫ φ))
 
 lemma diag_curry (p : ⊤_ C ⟶ A): p ≫ Limits.diag A = p ≫ (Limits.prod.rightUnitor A).inv ≫ (Limits.prod.map (𝟙 A) p) := by {
   simp
