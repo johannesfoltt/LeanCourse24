@@ -11,55 +11,37 @@ noncomputable section
 
 /- Now write definitions and theorems. -/
 
-variable (C : Type*) [Category C] [h : ChosenFiniteProducts C] [CartesianClosed C]
-variable (A B X Y Z: C)
-variable (φ: X ⟶ B ^^ A)
-variable (g h: B ⟶ B)
-variable (a : ⊤_ C ⟶ A)
-variable (x : ⊤_ C ⟶ X)
-
-abbrev point_surjective (Φ : A ⟶ B) :=
+abbrev point_surj {C : Type*} [Category C] [ChosenFiniteProducts C] [CartesianClosed C] {A B : C} (Φ : A ⟶ B) :=
   ∀ (q : ⊤_ C ⟶ B), ∃ (p : ⊤_ C ⟶ A), (p ≫ Φ) = q
 
-#check (Limits.prod.map a (x ≫ φ))
+abbrev weakly_point_surj {C : Type*} [Category C] [ChosenFiniteProducts C] [CartesianClosed C] {X A B : C} (Φ : X ⟶ B ^^ A) :=
+  ∀ (f : A ⟶ B), ∃ (x : ⊤_ C ⟶ X), ∀ (a : ⊤_ C ⟶ A), a ≫ f = (Limits.prod.lift a (x ≫ Φ)) ≫ (exp.ev A).app B
 
-abbrev weakly_point_surjective (Φ : X ⟶ B ^^ A) :=
-  ∀ (f : B ^^ A), ∃ (x : ⊤_ C ⟶ X), ∀ (a : ⊤_ C ⟶ A), a ≫ f =
+lemma point_surj_is_weakly_point_surj {C : Type*} [Category C] [ChosenFiniteProducts C] [CartesianClosed C] {X A B : C} :
+  ∀(Φ : X ⟶ B ^^ A), point_surj Φ → weakly_point_surj Φ := by {
+    intros Φ hΦ f
+    unfold point_surj at hΦ
+    obtain ⟨x, hx⟩ := hΦ (CartesianClosed.curry ((Limits.prod.rightUnitor A).1 ≫ f))
+    use x
+    intro a
+    nth_rewrite 2 [← Category.comp_id a]
+    rw [← Category.id_comp (x ≫ Φ), ← Limits.prod.lift_map, Category.assoc, ← CartesianClosed.uncurry_eq, hx]
+    simp
+  }
 
-abbrev has_fixed_point (f : A ⟶ A) :=
+abbrev has_fixed_point {C : Type*} [Category C] [ChosenFiniteProducts C] [CartesianClosed C] {A : C} (f : A ⟶ A) :=
   ∃ (s : ⊤_ C ⟶ A), (s ≫ f = s)
 
-lemma diag_curry (p : ⊤_ C ⟶ A): p ≫ Limits.diag A = p ≫ (Limits.prod.rightUnitor A).inv ≫ (Limits.prod.map (𝟙 A) p) := by {
-  simp
-  congr
-  rw [← Category.assoc, Limits.terminal.hom_ext (p ≫ Limits.terminal.from A) (𝟙 (⊤_ C))]
-  simp
-}
-
-theorem Lawvere_fixed_point :
-  (∃(Φ : A ⟶ B ^^ A), point_surjective C A (B ^^ A) Φ) → (∀(f : B ⟶ B), has_fixed_point C B f) := by {
+theorem Lawvere_fixed_point {C : Type*} [Category C] [ChosenFiniteProducts C] [CartesianClosed C] {A B : C} :
+  (∃(Φ : A ⟶ B ^^ A), weakly_point_surj Φ) → (∀(f : B ⟶ B), has_fixed_point f) := by {
     rintro ⟨Φ, hΦ⟩ f
-    let q := CartesianClosed.curry ((Limits.prod.rightUnitor A).hom ≫ (Limits.diag A) ≫ (Limits.prod.map (𝟙 A) Φ) ≫ ((exp.ev A).app B) ≫ f)
+    let q := (Limits.prod.lift (𝟙 A) Φ) ≫ ((exp.ev A).app B) ≫ f
     obtain ⟨p, hp⟩ := hΦ q
-    use p ≫ (Limits.prod.rightUnitor A).inv ≫ (CartesianClosed.uncurry (p ≫ Φ))
-    rw[eq_comm]
-    calc p ≫ (Limits.prod.rightUnitor A).inv ≫ (CartesianClosed.uncurry (p ≫ Φ))
-      = p ≫ (Limits.diag A) ≫ (Limits.prod.map (𝟙 A) Φ) ≫ ((exp.ev A).app B) ≫ f := by{
-      rw [hp]
-      unfold q
-      simp
-    }
-    _= p ≫ (Limits.prod.rightUnitor A).inv ≫ (Limits.prod.map (𝟙 A) p) ≫ (Limits.prod.map (𝟙 A) Φ) ≫ ((exp.ev A).app B) ≫ f := by{
-      rw [← Category.assoc, diag_curry C A p, Category.assoc, Category.assoc]
-    }
-    _= p ≫ (Limits.prod.rightUnitor A).inv ≫ (Limits.prod.map (𝟙 A) (p ≫ Φ)) ≫ ((exp.ev A).app B) ≫ f := by{
-      rw [Limits.prod.map_id_comp_assoc]
-    }
-    _= (p ≫ (Limits.prod.rightUnitor A).inv ≫ CartesianClosed.uncurry (p ≫ Φ)) ≫ f := by{
-      rw [← CategoryTheory.CartesianClosed.homEquiv_symm_apply_eq]
-      rw [@Adjunction.homEquiv_counit]
-      simp
-    }
+    use Limits.prod.lift p (p ≫ Φ) ≫ (exp.ev A).app B
+    nth_rewrite 2 [← hp p]
+    unfold q
+    rw [Limits.prod.comp_lift_assoc]
+    simp
   }
 
 theorem Lawvere_fixed_point_types {α β : Type*} (F :  α → (α → β)) :
