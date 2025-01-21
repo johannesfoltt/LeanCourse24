@@ -32,17 +32,25 @@ lemma point_surj_is_weakly_point_surj {C : Type*} [Category C] [ChosenFiniteProd
 abbrev has_fixed_point {C : Type*} [Category C] [ChosenFiniteProducts C] [CartesianClosed C] {A : C} (f : A ⟶ A) :=
   ∃ (s : ⊤_ C ⟶ A), (s ≫ f = s)
 
-theorem Lawvere_fixed_point {C : Type*} [Category C] [ChosenFiniteProducts C] [CartesianClosed C] {A B : C} :
-  (∃(Φ : A ⟶ B ^^ A), weakly_point_surj Φ) → (∀(f : B ⟶ B), has_fixed_point f) := by {
-    rintro ⟨Φ, hΦ⟩ f
-    let q := (Limits.prod.lift (𝟙 A) Φ) ≫ ((exp.ev A).app B) ≫ f
-    obtain ⟨p, hp⟩ := hΦ q
+theorem Lawvere_fixed_point {C : Type*} [Category C] [ChosenFiniteProducts C] [CartesianClosed C] {A B : C} (Φ : A ⟶ B ^^ A) (hΦ : weakly_point_surj Φ) :
+  (∀ (f : B ⟶ B), has_fixed_point f) := by {
+    intro f
+    obtain ⟨p, hp⟩ := hΦ ((Limits.prod.lift (𝟙 A) Φ) ≫ ((exp.ev A).app B) ≫ f)
     use Limits.prod.lift p (p ≫ Φ) ≫ (exp.ev A).app B
     nth_rewrite 2 [← hp p]
-    unfold q
     rw [Limits.prod.comp_lift_assoc]
     simp
   }
+
+theorem Lawvere_fixed_point_contrapositive {C : Type*} [Category C] [ChosenFiniteProducts C] [CartesianClosed C] {A B : C} (f : B ⟶ B) (hf : ¬ has_fixed_point f) (Φ : A ⟶ B ^^ A) : ¬ weakly_point_surj Φ := by {
+    by_contra hΦ
+    exact hf (Lawvere_fixed_point Φ hΦ f)
+  }
+
+theorem Lawvere_fixed_point_point_surj {C : Type*} [Category C] [ChosenFiniteProducts C] [CartesianClosed C] {A B : C} (Φ : A ⟶ B ^^ A) (hΦ : point_surj Φ) :
+  (∀ (f : B ⟶ B), has_fixed_point f) := Lawvere_fixed_point (Φ : A ⟶ B ^^ A) (point_surj_is_weakly_point_surj Φ hΦ)
+
+theorem Lawvere_fixed_point_point_surj_contrapositive {C : Type*} [Category C] [ChosenFiniteProducts C] [CartesianClosed C] {A B : C} (f : B ⟶ B) (hf : ¬ has_fixed_point f) (Φ : A ⟶ B ^^ A) : ¬ point_surj Φ := (Lawvere_fixed_point_contrapositive f hf Φ) ∘ (point_surj_is_weakly_point_surj Φ)
 
 theorem Lawvere_fixed_point_types {α β : Type*} (F :  α → (α → β)) :
   Function.Surjective F → (∀(f : β → β), ∃ (s : β), f s = s) := by {
