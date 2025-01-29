@@ -43,7 +43,7 @@ theorem Lawvere_fixed_point {C : Type*} [Category C] [ChosenFiniteProducts C] [C
   }
 
 theorem Lawvere_fixed_point_contrapositive {C : Type*} [Category C] [ChosenFiniteProducts C] [CartesianClosed C] {A B : C} (f : B ⟶ B) (hf : ¬ has_fixed_point f) (Φ : A ⟶ B ^^ A) : ¬ weakly_point_surj Φ := by {
-    by_contra hΦ
+    intro hΦ
     exact hf (Lawvere_fixed_point Φ hΦ f)
   }
 
@@ -64,6 +64,11 @@ theorem Lawvere_fixed_point_fin_prod {C : Type*} [Category C] [ChosenFiniteProdu
     rw [Limits.prod.comp_lift_assoc]
     simp
   }
+
+theorem Lawvere_fixed_point_fin_prod_contrapositive {C : Type*} [Category C] [ChosenFiniteProducts C] {A B : C} (f : B ⟶ B) (hf : ¬ has_fixed_point f) (Φ : (Limits.prod A A) ⟶ B) : ¬ weakly_point_surj_fin_prod Φ := by {
+  intro hΦ
+  exact hf (Lawvere_fixed_point_fin_prod Φ hΦ f)
+}
 
 theorem Lawvere_fixed_point_types {α β : Type*} (F :  α → (α → β)) :
   Function.Surjective F → (∀(f : β → β), ∃ (s : β), f s = s) := by {
