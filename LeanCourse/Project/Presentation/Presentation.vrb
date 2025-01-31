@@ -1,4 +1,5 @@
-\begin{proof}
+\frametitle{Proof of LFPT}
+  \begin{proof}
     Let $g : A \rightarrow B$ be the composite morphism
     \[\begin{tikzcd}
 	    A & {A \times A} & {B^A\times A} & {B} & {B}

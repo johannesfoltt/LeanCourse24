@@ -89,7 +89,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Lawvere's fixed point theorem}
+  \frametitle{Lawvere's fixed point theorem (LFPT)}
   \begin{alertblock}{Theorem}
     Let $\mathcal{C}$ be a CCC. If there is a weakly point surjective morphism $\Phi : A \rightarrow B ^ A$ in $\mathcal{C}$, then every morphism $f : B \rightarrow B$ has a fixed point (a $s : \top \rightarrow B$ such that $f \circ s = s$).
   \end{alertblock}
@@ -99,6 +99,7 @@
 \end{frame}
 
 \begin{frame}[fragile]
+  \frametitle{Proof of LFPT}
   \begin{proof}
     Let $g : A \rightarrow B$ be the composite morphism
     \[\begin{tikzcd}
@@ -119,5 +120,31 @@
   \end{proof}
 \end{frame}
 
+\section{Applications}
+
+\begin{frame}
+  \frametitle{Cantor's Theorem (in a topos)}
+  We can use LFPT to prove a categorical version of Cantor's theorem.
+  \begin{block}{Definition}
+    A \textbf{topos} $\mathcal{T}$ is a CCC with finite limits and a subobject classifier $\Omega$.
+  \end{block}
+  Topoi naturally give rise to an internal first-order theory.
+  \begin{alertblock}{Theorem}
+    Let $\mathcal{T}$ be a topos. If there exists a $X \in \text{ob}(\mathcal{T})$ and an epimorphism $\Phi : X \rightarrow \Omega ^ X$, then $\mathcal{T}$ is degenerate (i.e. the internal theory is inconsistent).
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Self-referential Theorems}
+  We can apply LFPT to several ``self-referential'' theorems in logic in the following way:
+  \begin{itemize}
+    \item For any $L$-theory $T$ we construct a category with finite products and designated elements $\Omega$ and $A$.
+    \item Morphisms $t : \top \rightarrow A^n$ correspond to classes of constant terms.
+    \item Morphisms $\varphi : A^n \rightarrow \Omega$ correspond to classes of formulas with $n$ free variables.
+    \item Composition corresponds to substitution.
+    \item There are morphisms $\text{true, false} : \top \rightarrow \Omega$
+    \item A Gödel numbering can be regarded as a point surjection $g : A \rightarrow \Omega ^ A$ ($\Omega ^ A$ does not exist, but we can use currying)
+  \end{itemize}
+\end{frame}
 
 \end{document}
